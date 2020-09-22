@@ -21,6 +21,8 @@ func AddSerializer(next http.Handler) http.Handler {
 		// Determine which serializer to use based on the content-type.
 		switch r.Header.Get("Content-Type") {
 		// TODO: One day add more serializers
+		// TODO: Store the serializer so a new instance doesn't need to be created on each request
+		// TODO: Use .GetContentType() to match to the Content-Type header
 		default:
 			s = serializer.NewSurveyJSONSerializer()
 		}

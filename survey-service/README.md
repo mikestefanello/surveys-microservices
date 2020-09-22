@@ -5,5 +5,4 @@
 ## Remaining
 
 * Tests
-* gRPC
 * API documentation

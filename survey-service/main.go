@@ -33,10 +33,13 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Load the service
 	service := survey.NewService(repo)
-	handler := handler.NewSurveyHTTPHandler(service, &log)
-	router := router.NewRouter(handler)
-	httpServer := server.NewHTTPServer(router, cfg.HTTP)
+
+	// Load HTTP dependencies
+	httpHandler := handler.NewSurveyHTTPHandler(service, &log)
+	httpRouter := router.NewRouter(httpHandler)
+	httpServer := server.NewHTTPServer(httpRouter, cfg.HTTP)
 
 	// Start the HTTP server
 	go func() {
@@ -47,6 +50,12 @@ func main() {
 			os.Exit(1)
 		}
 	}()
+
+	// Load gRPC dependencies
+	grpcHandler := handler.NewSurveyGrpcHandler(service, &log)
+
+	// Start the gRPC server
+	server.StartGrpcServer(grpcHandler, cfg.Grpc, &log)
 
 	// Listen for sigterm or interupt signals
 	c := make(chan os.Signal, 1)

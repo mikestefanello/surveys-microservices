@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+service Survey {
+  // GetSurvey returns the requested survey
+  rpc GetSurvey(SurveyRequest) returns (SurveyResponse);
+}
+
+// SurveyRequest defines the request for a survey
+message SurveyRequest {
+  string Id = 1;
+}
+
+// SurveyResponse contains the requested survey
+message SurveyResponse {
+  string Id = 1;
+  string Name = 2;
+  repeated QuestionResponse Questions = 3;
+  int64 CreatedAt = 4;
+}
+
+// QuestionResponse contains a question from a given survey
+message QuestionResponse {
+  int32 Id = 1;
+  string Text = 2;
+}

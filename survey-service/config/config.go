@@ -9,6 +9,7 @@ import (
 // Config stores complete application configuration
 type Config struct {
 	HTTP       HTTPConfig
+	Grpc       GrpcConfig
 	Mongo      MongoConfig
 	Repository string `env:"REPOSITORY,default=mongo"`
 }
@@ -20,6 +21,13 @@ type HTTPConfig struct {
 	ReadTimeout  time.Duration `env:"HTTP_READ_TIMEOUT,default=5s"`
 	WriteTimeout time.Duration `env:"HTTP_WRITE_TIMEOUT,default=10s"`
 	IdleTimeout  time.Duration `env:"HTTP_IDLE_TIMEOUT,default=2m"`
+}
+
+// GrpcConfig stores gRPC configuration
+type GrpcConfig struct {
+	Network  string `env:"GRPC_NETWORK,default=tcp"`
+	Hostname string `env:"GRPC_HOSTNAME"`
+	Port     uint16 `env:"GRPC_PORT,default=9000"`
 }
 
 // MongoConfig stores Mongo DB configuration
