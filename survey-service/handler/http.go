@@ -116,14 +116,14 @@ func (h *SurveyHTTPHandler) Post(w http.ResponseWriter, r *http.Request) {
 	h.log.Info().Str("id", s.ID).Msg("Survey created")
 
 	// Encode the survey to be returned
-	json, err := serializer.Encode(s)
+	res, err := serializer.Encode(s)
 	if err != nil {
 		h.log.Error().Str("id", s.ID).Err(err).Msg("Unable to encode survey")
 		h.Error(w, r, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 
-	h.Response(w, r, json, http.StatusCreated)
+	h.Response(w, r, res, http.StatusCreated)
 }
 
 // GetSerializer gets a serializer from the request, which is added via middleware

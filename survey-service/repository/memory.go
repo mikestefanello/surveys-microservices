@@ -7,8 +7,6 @@ import (
 	"github.com/mikestefanello/surveys-microservices/survey-service/survey"
 )
 
-var storage = new(sync.Map)
-
 type surveyMemoryRepository struct {
 	storage map[string]*survey.Survey
 	mutex   *sync.Mutex
