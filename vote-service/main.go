@@ -15,6 +15,7 @@ import (
 	"github.com/mikestefanello/surveys-microservices/vote-service/logger"
 	"github.com/mikestefanello/surveys-microservices/vote-service/repository"
 	"github.com/mikestefanello/surveys-microservices/vote-service/router"
+	"github.com/mikestefanello/surveys-microservices/vote-service/serializer"
 	"github.com/mikestefanello/surveys-microservices/vote-service/server"
 	"github.com/mikestefanello/surveys-microservices/vote-service/vote"
 )
@@ -31,7 +32,8 @@ func main() {
 	}
 
 	// Load the repository
-	repo, err := repository.NewRabbitVoteWriterRepository(cfg.Rabbit)
+	sz := serializer.NewVoteJSONSerializer()
+	repo, err := repository.NewRabbitVoteWriterRepository(cfg.Rabbit, sz)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Cannot connect to repository")
 		os.Exit(1)
@@ -41,7 +43,8 @@ func main() {
 	grpcAddr := fmt.Sprintf("%s:%d", cfg.SurveyGrpc.Hostname, cfg.SurveyGrpc.Port)
 	conn, err := grpc.Dial(grpcAddr, grpc.WithInsecure())
 	if err != nil {
-		panic(err)
+		log.Fatal().Err(err).Msg("Cannot connect to survey gRPC service")
+		os.Exit(1)
 	}
 	cli := protos.NewSurveyClient(conn)
 	log.Info().Str("on", grpcAddr).Msg("Connected to survey gRPC service")
