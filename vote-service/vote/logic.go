@@ -1,11 +1,13 @@
 package vote
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"time"
 
 	"github.com/go-playground/validator"
+	protos "github.com/mikestefanello/surveys-microservices/survey-service/protos/survey"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -23,26 +25,45 @@ type voteService struct {
 	writer    WriterRepository
 	reader    ReaderRepository
 	validator *validator.Validate
+	surveys   protos.SurveyClient
 }
 
 // NewService creates a new survey service
-func NewService(w WriterRepository, r ReaderRepository) Service {
+func NewService(w WriterRepository, r ReaderRepository, cli protos.SurveyClient) Service {
 	return &voteService{
 		writer:    w,
 		reader:    r,
 		validator: validator.New(),
+		surveys:   cli,
 	}
 }
 
-func (s *voteService) Insert(vote *Vote) error {
-	if err := s.validator.Struct(vote); err != nil {
+func (s *voteService) Insert(v *Vote) error {
+	if err := s.validator.Struct(v); err != nil {
 		return fmt.Errorf("%w: %v", ErrInvalidRequest, err)
 	}
 
-	// TODO: Validate that the survey and question exist!
+	// Fetch the survey
+	req := &protos.SurveyRequest{Id: v.Survey}
+	surv, err := s.surveys.GetSurvey(context.Background(), req)
+	if err != nil {
+		return ErrInvalidRequest
+	}
 
-	vote.ID = uuid.NewV4().String()
-	vote.Timestamp = time.Now().UTC().Unix()
+	// The survey ID is validated, but we need to validate the question ID
+	valid := false
+	for _, q := range surv.GetQuestions() {
+		if q.GetId() == int32(v.Question) {
+			valid = true
+			break
+		}
+	}
+	if !valid {
+		return ErrInvalidRequest
+	}
 
-	return s.writer.Insert(vote)
+	v.ID = uuid.NewV4().String()
+	v.Timestamp = time.Now().UTC().Unix()
+
+	return s.writer.Insert(v)
 }

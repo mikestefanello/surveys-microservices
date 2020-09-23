@@ -2,9 +2,13 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 	"time"
+
+	protos "github.com/mikestefanello/surveys-microservices/survey-service/protos/survey"
+	"google.golang.org/grpc"
 
 	"github.com/mikestefanello/surveys-microservices/vote-service/config"
 	"github.com/mikestefanello/surveys-microservices/vote-service/handler"
@@ -33,8 +37,17 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Connect to the survey gRPC service
+	grpcAddr := fmt.Sprintf("%s:%d", cfg.SurveyGrpc.Hostname, cfg.SurveyGrpc.Port)
+	conn, err := grpc.Dial(grpcAddr, grpc.WithInsecure())
+	if err != nil {
+		panic(err)
+	}
+	cli := protos.NewSurveyClient(conn)
+	log.Info().Str("on", grpcAddr).Msg("Connected to survey gRPC service")
+
 	// Load the service
-	service := vote.NewService(repo, repo)
+	service := vote.NewService(repo, repo, cli)
 
 	// Load HTTP dependencies
 	httpHandler := handler.NewVoteHTTPHandler(service, &log)

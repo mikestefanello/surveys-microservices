@@ -4,7 +4,7 @@
 
 This is an exercise and example of a simple distributed application composed of multiple microservices. It is not meant to be a realistic or production-ready architecture, but rather just an exploration in learning _Go_, _gRPC_ and a number of other technologies, following [hexagonal design](https://en.wikipedia.org/wiki/Hexagonal_architecture_(software)).
 
-The end result is a web-application that allows for the creation of surveys and the voting on them.
+The end result is a web-application that allows for the creation of surveys and voting on them.
 
 ## Architecture
 

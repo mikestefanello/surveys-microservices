@@ -8,8 +8,9 @@ import (
 
 // Config stores complete application configuration
 type Config struct {
-	HTTP   HTTPConfig
-	Rabbit RabbitConfig
+	HTTP       HTTPConfig
+	Rabbit     RabbitConfig
+	SurveyGrpc SurveyGrcpConfig
 }
 
 // HTTPConfig stores HTTP configuration
@@ -28,6 +29,12 @@ type RabbitConfig struct {
 	Username  string `env:"RABBITMQ_USERNAME,default=guest"`
 	Password  string `env:"RABBITMQ_PASSWORD,default=guest"`
 	QueueName string `env:"RABBITMQ_QUEUE,default=votes"`
+}
+
+// SurveyGrcpConfig stores configuration to connect to the survey gRPC service
+type SurveyGrcpConfig struct {
+	Hostname string `env:"SURVEY_GRPC_HOSTNAME,default=localhost"`
+	Port     uint16 `env:"SURVEY_GRPC_PORT,default=9000"`
 }
 
 // GetConfig loads and returns application configuration

@@ -13,4 +13,5 @@ require (
 	github.com/rs/zerolog v1.20.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/streadway/amqp v1.0.0
+	google.golang.org/grpc v1.32.0
 )

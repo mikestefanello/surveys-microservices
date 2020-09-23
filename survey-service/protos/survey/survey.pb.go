@@ -35,6 +35,7 @@ type SurveyRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// Id is the survey ID
 	Id string `protobuf:"bytes,1,opt,name=Id,json=id,proto3" json:"Id,omitempty"`
 }
 
@@ -83,10 +84,14 @@ type SurveyResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id        string              `protobuf:"bytes,1,opt,name=Id,json=id,proto3" json:"Id,omitempty"`
-	Name      string              `protobuf:"bytes,2,opt,name=Name,json=name,proto3" json:"Name,omitempty"`
+	// Id is the survey ID
+	Id string `protobuf:"bytes,1,opt,name=Id,json=id,proto3" json:"Id,omitempty"`
+	// Name is the survey name
+	Name string `protobuf:"bytes,2,opt,name=Name,json=name,proto3" json:"Name,omitempty"`
+	// Questions is a list of questions
 	Questions []*QuestionResponse `protobuf:"bytes,3,rep,name=Questions,json=questions,proto3" json:"Questions,omitempty"`
-	CreatedAt int64               `protobuf:"varint,4,opt,name=CreatedAt,json=createdAt,proto3" json:"CreatedAt,omitempty"`
+	// CreatedAt is the timestamp of when the survey was created
+	CreatedAt int64 `protobuf:"varint,4,opt,name=CreatedAt,json=createdAt,proto3" json:"CreatedAt,omitempty"`
 }
 
 func (x *SurveyResponse) Reset() {
@@ -155,7 +160,9 @@ type QuestionResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id   int32  `protobuf:"varint,1,opt,name=Id,json=id,proto3" json:"Id,omitempty"`
+	// Id is the question ID
+	Id int32 `protobuf:"varint,1,opt,name=Id,json=id,proto3" json:"Id,omitempty"`
+	// Text is the question text
 	Text string `protobuf:"bytes,2,opt,name=Text,json=text,proto3" json:"Text,omitempty"`
 }
 

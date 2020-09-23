@@ -7,19 +7,26 @@ service Survey {
 
 // SurveyRequest defines the request for a survey
 message SurveyRequest {
+  // Id is the survey ID
   string Id = 1;
 }
 
 // SurveyResponse contains the requested survey
 message SurveyResponse {
+  // Id is the survey ID
   string Id = 1;
+  // Name is the survey name
   string Name = 2;
+  // Questions is a list of questions
   repeated QuestionResponse Questions = 3;
+  // CreatedAt is the timestamp of when the survey was created
   int64 CreatedAt = 4;
 }
 
 // QuestionResponse contains a question from a given survey
 message QuestionResponse {
+  // Id is the question ID
   int32 Id = 1;
+  // Text is the question text
   string Text = 2;
 }
