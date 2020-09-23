@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/mikestefanello/surveys-microservices/vote-service/serializer"
+	"github.com/mikestefanello/surveys-microservices/vote-service/vote"
 	"github.com/mikestefanello/surveys-microservices/vote-worker-service/config"
 	"github.com/mikestefanello/surveys-microservices/vote-worker-service/logger"
 	"github.com/mikestefanello/surveys-microservices/vote-worker-service/queue"
@@ -26,9 +27,20 @@ func main() {
 	// Load the queue
 	mq := queue.NewRabbitVoteQueue(cfg.Rabbit, sz, &log)
 
-	// Listen for new messages
+	// Create a channel to receive votes from the queue
+	vc := make(chan *vote.Vote)
+
+	// Consume the queue
 	go func() {
-		mq.Consume()
+		mq.Consume(vc)
+	}()
+
+	// Receive from the queue
+	go func() {
+		for v := range vc {
+			// TODO: Pass to the database
+			log.Info().Str("id", v.ID).Msg("Vote ready for storage")
+		}
 	}()
 
 	// Wait forever

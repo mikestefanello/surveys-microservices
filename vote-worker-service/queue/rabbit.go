@@ -7,25 +7,25 @@ import (
 	"github.com/mikestefanello/surveys-microservices/vote-service/vote"
 	"github.com/mikestefanello/surveys-microservices/vote-worker-service/config"
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"github.com/streadway/amqp"
 )
 
-type RabbitVoteQueue struct {
+type rabbitVoteQueue struct {
 	cfg        config.RabbitConfig
 	serializer vote.Serializer
 	log        *zerolog.Logger
 }
 
-func NewRabbitVoteQueue(cfg config.RabbitConfig, sz vote.Serializer, l *zerolog.Logger) RabbitVoteQueue {
-	return RabbitVoteQueue{
+// NewRabbitVoteQueue creates a new rabbit vote queue
+func NewRabbitVoteQueue(cfg config.RabbitConfig, sz vote.Serializer, l *zerolog.Logger) VoteQueue {
+	return &rabbitVoteQueue{
 		cfg:        cfg,
 		serializer: sz,
 		log:        l,
 	}
 }
 
-func (r *RabbitVoteQueue) Consume() {
+func (r *rabbitVoteQueue) Consume(vc chan<- *vote.Vote) {
 	// Connect to rabbit
 	host := fmt.Sprintf("%s:%d", r.cfg.Hostname, r.cfg.Port)
 	addr := fmt.Sprintf("amqp://%s:%s@%s/", r.cfg.Username, r.cfg.Password, host)
@@ -67,6 +67,7 @@ func (r *RabbitVoteQueue) Consume() {
 			r.log.Error().Err(err).Str("body", string(msg.Body)).Msg("Unable to parse vote from queue message")
 			continue
 		}
-		log.Info().Str("id", v.ID).Msg("Vote received from queue")
+		r.log.Info().Str("id", v.ID).Msg("Vote received from queue")
+		vc <- v
 	}
 }
