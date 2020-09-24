@@ -6,13 +6,13 @@ CREATE TABLE votes (
   id TEXT PRIMARY KEY,
   survey TEXT,
   question INT,
-  created TIMESTAMP
+  created BIGINT
 );
 
 CREATE TABLE results (
   survey TEXT,
   question INT,
   votes INT,
-  last_update TIMESTAMP,
+  last_update BIGINT,
   PRIMARY KEY(survey, question)
 );
