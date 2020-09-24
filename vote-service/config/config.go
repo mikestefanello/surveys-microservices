@@ -26,7 +26,7 @@ type HTTPConfig struct {
 type RabbitConfig struct {
 	Hostname  string `env:"RABBITMQ_HOSTNAME,default=localhost"`
 	Port      uint16 `env:"RABBITMQ_PORT,default=5672"`
-	Username  string `env:"RABBITMQ_USERNAME,default=guest"`
+	Username  string `env:"RABBITMQ_USER,default=guest"`
 	Password  string `env:"RABBITMQ_PASSWORD,default=guest"`
 	QueueName string `env:"RABBITMQ_QUEUE,default=votes"`
 }

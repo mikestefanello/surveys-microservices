@@ -4,7 +4,7 @@ services:
   #frontend
   #surveys
   survey_storage:
-    image: mongo:latest
+    image: mongo
     ports:
       - "27017:27017"
   #votes
@@ -14,4 +14,12 @@ services:
       - "15672:15672"
       - "5672:5672"
   #vote_worker
-  #vote_storage
+  vote_storage:
+    image: postgres:alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./vote-service/init/postgres:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
