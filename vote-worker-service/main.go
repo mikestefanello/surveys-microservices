@@ -8,6 +8,7 @@ import (
 	"github.com/mikestefanello/surveys-microservices/vote-worker-service/config"
 	"github.com/mikestefanello/surveys-microservices/vote-worker-service/logger"
 	"github.com/mikestefanello/surveys-microservices/vote-worker-service/queue"
+	"github.com/mikestefanello/surveys-microservices/vote-worker-service/storage"
 )
 
 func main() {
@@ -24,6 +25,13 @@ func main() {
 	// Get a vote serializer
 	sz := serializer.NewVoteJSONSerializer()
 
+	// Load the storage
+	stg, err := storage.NewPostgresVoteStorage(cfg.Postgres)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Cannot connect to vote storage")
+		os.Exit(1)
+	}
+
 	// Load the queue
 	mq := queue.NewRabbitVoteQueue(cfg.Rabbit, sz, &log)
 
@@ -38,8 +46,21 @@ func main() {
 	// Receive from the queue
 	go func() {
 		for v := range vc {
-			// TODO: Pass to the database
-			log.Info().Str("id", v.ID).Msg("Vote ready for storage")
+			// Store the vote
+			err := stg.Insert(v)
+			if err != nil {
+				log.Error().Err(err).Str("id", v.ID).Msg("Unable to store vote")
+				continue
+			}
+			log.Info().Str("id", v.ID).Msg("Vote stored")
+
+			// Update the results
+			err = stg.UpdateResults(v)
+			if err != nil {
+				log.Error().Err(err).Str("id", v.ID).Msg("Unable to update vote results")
+				continue
+			}
+			log.Info().Str("id", v.ID).Msg("Vote added to results")
 		}
 	}()
 

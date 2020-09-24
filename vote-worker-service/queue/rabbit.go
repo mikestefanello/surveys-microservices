@@ -11,7 +11,7 @@ import (
 )
 
 type rabbitVoteQueue struct {
-	cfg        config.RabbitConfig
+	config     config.RabbitConfig
 	serializer vote.Serializer
 	log        *zerolog.Logger
 }
@@ -19,7 +19,7 @@ type rabbitVoteQueue struct {
 // NewRabbitVoteQueue creates a new rabbit vote queue
 func NewRabbitVoteQueue(cfg config.RabbitConfig, sz vote.Serializer, l *zerolog.Logger) VoteQueue {
 	return &rabbitVoteQueue{
-		cfg:        cfg,
+		config:     cfg,
 		serializer: sz,
 		log:        l,
 	}
@@ -27,8 +27,8 @@ func NewRabbitVoteQueue(cfg config.RabbitConfig, sz vote.Serializer, l *zerolog.
 
 func (r *rabbitVoteQueue) Consume(vc chan<- *vote.Vote) {
 	// Connect to rabbit
-	host := fmt.Sprintf("%s:%d", r.cfg.Hostname, r.cfg.Port)
-	addr := fmt.Sprintf("amqp://%s:%s@%s/", r.cfg.Username, r.cfg.Password, host)
+	host := fmt.Sprintf("%s:%d", r.config.Hostname, r.config.Port)
+	addr := fmt.Sprintf("amqp://%s:%s@%s/", r.config.User, r.config.Password, host)
 	conn, err := amqp.Dial(addr)
 	if err != nil {
 		r.log.Fatal().Err(err).Msg("Cannot connect to queue")
@@ -44,9 +44,23 @@ func (r *rabbitVoteQueue) Consume(vc chan<- *vote.Vote) {
 	}
 	defer ch.Close()
 
+	// Specify the queue
+	_, err = ch.QueueDeclare(
+		r.config.QueueName,
+		true,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		r.log.Fatal().Err(err).Msg("Cannot declare queue")
+		os.Exit(1)
+	}
+
 	// Initialize queue consumption
 	msgs, err := ch.Consume(
-		r.cfg.QueueName,
+		r.config.QueueName,
 		"",
 		true,
 		false,
