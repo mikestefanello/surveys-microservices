@@ -75,6 +75,7 @@ func (r *rabbitVoteQueue) Consume(vc chan<- *vote.Vote) {
 
 	r.log.Info().Str("on", host).Msg("Connected to queue. Awaiting messages.")
 
+	// Wait for messages to consume
 	for msg := range msgs {
 		v, err := r.serializer.Decode(msg.Body)
 		if err != nil {

@@ -10,6 +10,28 @@ The end result is a web-application that allows for the creation of surveys and 
 
 ![flowchart](images/flowchart.png)
 
+## Remaining tasks
+
+* GET routes to return vote results
+* Frontend service
+* Containerize Go apps
+* Tests
+* README docs
+* API documentation
+* Refactoring
+
+## Run the app
+
+(todo)
+
+## Configuration
+
+(todo)
+
+## Notes
+
+There is currently no user authentication or limits placed on the amount of votes a client can make on any surveys. Surveys and votes cannot be changed or deleted.
+
 ## Credits
 
 * [chi](https://github.com/go-chi/chi)
@@ -21,3 +43,4 @@ The end result is a web-application that allows for the creation of surveys and 
 * [grpc](https://pkg.go.dev/google.golang.org/grpc)
 * [go.uuid](https://github.com/satori/go.uuid)
 * [amqp](https://github.com/streadway/amqp)
+* [pgx](https://github.com/jackc/pgx)
