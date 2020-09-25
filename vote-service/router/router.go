@@ -24,5 +24,11 @@ func NewRouter(h *handler.VoteHTTPHandler) *chi.Mux {
 		r.Post("/", h.Vote)
 	})
 
+	// Results routes
+	r.Route("/results", func(r chi.Router) {
+		r.Use(middleware.AddSerializer)
+		r.Get("/{id}", h.GetResults)
+	})
+
 	return r
 }

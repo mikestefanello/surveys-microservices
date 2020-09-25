@@ -6,6 +6,8 @@ type WriterRepository interface {
 	Insert(v *Vote) error
 }
 
-// ReaderRepository contains functions to read votes from a repository
-type ReaderRepository interface {
+// ResultsRepository contains functions to read votes from a repository
+type ResultsRepository interface {
+	// GetResults gets the results for a given survey
+	GetResults(surveyID string) (Results, error)
 }

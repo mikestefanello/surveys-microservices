@@ -11,6 +11,8 @@ import (
 	"github.com/mikestefanello/surveys-microservices/vote-worker-service/storage"
 )
 
+// TODO: Need to handle if DB or queue connection dies?
+
 func main() {
 	// Get a logger
 	log := logger.NewConsoleLogger()

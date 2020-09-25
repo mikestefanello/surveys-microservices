@@ -31,11 +31,18 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Load the repository
+	// Load the write repository
 	sz := serializer.NewVoteJSONSerializer()
-	repo, err := repository.NewRabbitVoteWriterRepository(cfg.Rabbit, sz)
+	writer, err := repository.NewRabbitVoteWriterRepository(cfg.Rabbit, sz)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Cannot connect to repository")
+		log.Fatal().Err(err).Msg("Cannot connect to write repository")
+		os.Exit(1)
+	}
+
+	// Load the results repository
+	results, err := repository.NewPostgresResultsRepository(cfg.Postgres)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Cannot connect to results repository")
 		os.Exit(1)
 	}
 
@@ -50,7 +57,7 @@ func main() {
 	log.Info().Str("on", grpcAddr).Msg("Connected to survey gRPC service")
 
 	// Load the service
-	service := vote.NewService(repo, repo, cli)
+	service := vote.NewService(writer, results, cli)
 
 	// Load HTTP dependencies
 	httpHandler := handler.NewVoteHTTPHandler(service, &log)

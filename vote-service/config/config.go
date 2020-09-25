@@ -11,6 +11,7 @@ type Config struct {
 	HTTP       HTTPConfig
 	Rabbit     RabbitConfig
 	SurveyGrpc SurveyGrcpConfig
+	Postgres   PostgresConfig
 }
 
 // HTTPConfig stores HTTP configuration
@@ -35,6 +36,21 @@ type RabbitConfig struct {
 type SurveyGrcpConfig struct {
 	Hostname string `env:"SURVEY_GRPC_HOSTNAME,default=localhost"`
 	Port     uint16 `env:"SURVEY_GRPC_PORT,default=9000"`
+}
+
+// PostgresConfig stores Postgres configuration
+type PostgresConfig struct {
+	Hostname string `env:"POSTGRES_HOSTNAME,default=localhost"`
+	Port     uint16 `env:"POSTGRES_PORT,default=5432"`
+	User     string `env:"POSTGRES_USER,default=admin"`
+	Password string `env:"POSTGRES_PASSWORD,default=admin"`
+	Database string `env:"POSTGRES_DB,default=voting"`
+	Tables   PostgresTablesConfig
+}
+
+// PostgresTablesConfig stores Postgres tables
+type PostgresTablesConfig struct {
+	Results string `env:"POSTGRES_TABLES_RESULTS,default=results"`
 }
 
 // GetConfig loads and returns application configuration

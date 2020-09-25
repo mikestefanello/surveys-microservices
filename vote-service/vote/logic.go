@@ -14,6 +14,9 @@ import (
 var (
 	// ErrInvalidRequest indicates that an invalid vote was provided
 	ErrInvalidRequest = errors.New("Invalid vote input")
+
+	// ErrResultsNotFound indicates that results could not be found for a given survey
+	ErrResultsNotFound = errors.New("Results not found")
 )
 
 // ErrorResponse provides a structure for error responses
@@ -23,16 +26,16 @@ type ErrorResponse struct {
 
 type voteService struct {
 	writer    WriterRepository
-	reader    ReaderRepository
+	results   ResultsRepository
 	validator *validator.Validate
 	surveys   protos.SurveyClient
 }
 
 // NewService creates a new survey service
-func NewService(w WriterRepository, r ReaderRepository, cli protos.SurveyClient) Service {
+func NewService(w WriterRepository, r ResultsRepository, cli protos.SurveyClient) Service {
 	return &voteService{
 		writer:    w,
-		reader:    r,
+		results:   r,
 		validator: validator.New(),
 		surveys:   cli,
 	}
@@ -66,4 +69,8 @@ func (s *voteService) Insert(v *Vote) error {
 	v.Timestamp = time.Now().UTC().Unix()
 
 	return s.writer.Insert(v)
+}
+
+func (s *voteService) GetResults(surveyID string) (Results, error) {
+	return s.results.GetResults(surveyID)
 }

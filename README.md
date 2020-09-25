@@ -12,7 +12,6 @@ The end result is a web-application that allows for the creation of surveys and 
 
 ## Remaining tasks
 
-* GET routes to return vote results
 * Frontend service
 * Containerize Go apps
 * Tests

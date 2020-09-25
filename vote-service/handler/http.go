@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/go-chi/chi"
 	"github.com/mikestefanello/surveys-microservices/vote-service/middleware"
 	"github.com/mikestefanello/surveys-microservices/vote-service/vote"
 	"github.com/rs/zerolog"
@@ -26,7 +27,7 @@ func NewVoteHTTPHandler(service vote.Service, log *zerolog.Logger) *VoteHTTPHand
 
 // Vote handles post requests to cast a vote
 func (h *VoteHTTPHandler) Vote(w http.ResponseWriter, r *http.Request) {
-	h.log.Info().Msg("POST request received")
+	h.log.Info().Msg("POST request received: Vote")
 
 	// Read the request body
 	requestBody, err := ioutil.ReadAll(r.Body)
@@ -69,6 +70,34 @@ func (h *VoteHTTPHandler) Vote(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.Response(w, r, res, http.StatusCreated)
+}
+
+// GetResults handles get requests to get results for a given survey
+func (h *VoteHTTPHandler) GetResults(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	h.log.Info().Str("id", id).Msg("GET request received: GetResults")
+
+	results, err := h.service.GetResults(id)
+	if err != nil {
+		if errors.Is(err, vote.ErrResultsNotFound) {
+			h.log.Debug().Str("id", id).Msg("Invalid survey requested for results")
+			h.Error(w, r, err.Error(), http.StatusNotFound)
+		} else {
+			h.log.Error().Str("id", id).Err(err).Msg("Unable to load results")
+			h.Error(w, r, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	// Encode the results to be returned
+	res, err := h.GetSerializer(r).EncodeResults(&results)
+	if err != nil {
+		h.log.Error().Str("id", id).Err(err).Msg("Unable to encode results")
+		h.Error(w, r, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	h.Response(w, r, res, http.StatusOK)
 }
 
 // GetSerializer gets a serializer from the request, which is added via middleware
