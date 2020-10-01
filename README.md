@@ -23,6 +23,25 @@ The end result is a web-application that allows for the creation of surveys and 
 
 (todo)
 
+## Logging
+
+Easily readable logs are provided to illustrate the requests, responses and all communication between the services. For example, using `docker-compose logs -f`, the log output looks something like:
+
+```
+surveys_1         | 2020-10-01T16:50:25Z INF COLLECTION request received
+surveys_1         | 2020-10-01T16:50:33Z INF POST request received
+surveys_1         | 2020-10-01T16:50:33Z INF Survey created id=Z5ptDYFGR
+votes_1           | 2020-10-01T16:50:39Z INF POST request received: Vote
+surveys_1         | 2020-10-01T16:50:39Z INF GetSurvey request received id=Z5ptDYFGR
+vote_queue_1      | 2020-10-01 16:50:39.865 [info] <0.880.0> accepting AMQP connection <0.880.0> (172.22.0.6:58472 -> 172.22.0.2:5672)
+vote_queue_1      | 2020-10-01 16:50:39.868 [info] <0.880.0> connection <0.880.0> (172.22.0.6:58472 -> 172.22.0.2:5672): user 'guest' authenticated and granted access
+vote_worker_1     | 2020-10-01T16:50:39Z INF Vote received from queue id=80530e3e-7ae9-4b25-9ec8-7fd4c665a75f
+votes_1           | 2020-10-01T16:50:39Z INF Vote created id=80530e3e-7ae9-4b25-9ec8-7fd4c665a75f
+vote_queue_1      | 2020-10-01 16:50:39.870 [info] <0.880.0> closing AMQP connection <0.880.0> (172.22.0.6:58472 -> 172.22.0.2:5672, vhost: '/', user: 'guest')
+vote_worker_1     | 2020-10-01T16:50:39Z INF Vote stored id=80530e3e-7ae9-4b25-9ec8-7fd4c665a75f
+vote_worker_1     | 2020-10-01T16:50:39Z INF Vote added to results id=80530e3e-7ae9-4b25-9ec8-7fd4c665a75f
+```
+
 ## Configuration
 
 (todo)

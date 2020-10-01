@@ -2,18 +2,50 @@ version: "3"
 
 services:
   #frontend
-  #surveys
+  surveys:
+    build: ./survey-service/
+    environment:
+      MONGO_URL: "mongodb://survey_storage:27017"
+    ports:
+      - "8081:8081"
+    depends_on:
+      - survey_storage
   survey_storage:
     image: mongo
     ports:
       - "27017:27017"
-  #votes
+  votes:
+    build: ./vote-service/
+    restart: on-failure
+    environment:
+      SURVEY_GRPC_HOSTNAME: surveys
+      RABBITMQ_HOSTNAME: vote_queue
+      POSTGRES_HOSTNAME: vote_storage
+    ports:
+      - "8082:8082"
+    depends_on:
+      - surveys
+      - vote_queue
+      - vote_storage
   vote_queue:
     image: rabbitmq:3-management
     ports:
       - "15672:15672"
       - "5672:5672"
-  #vote_worker
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+      interval: 5s
+      timeout: 15s
+      retries: 1
+  vote_worker:
+    build: ./vote-worker-service/
+    restart: on-failure
+    environment:
+      RABBITMQ_HOSTNAME: vote_queue
+      POSTGRES_HOSTNAME: vote_storage
+    depends_on:
+      - vote_queue
+      - vote_storage
   vote_storage:
     image: postgres:alpine
     ports:
