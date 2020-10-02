@@ -8,7 +8,7 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <router-link :to="{ name: 'NewSurvey' }" tag="a" class="nav-link">+ Create a new survey</router-link>
+              <router-link :to="{ name: 'SurveyForm' }" tag="a" class="nav-link">+ Create a new survey</router-link>
             </li>
           </ul>
         </div>

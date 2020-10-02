@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import NewSurvey from '../views/NewSurvey.vue'
+import SurveyForm from '../forms/Survey.vue'
+import Survey from '../views/Survey.vue'
 
 Vue.use(VueRouter)
 
@@ -13,8 +14,17 @@ const routes = [
   },
   {
     path: '/new',
-    name: 'NewSurvey',
-    component: NewSurvey
+    name: 'SurveyForm',
+    component: SurveyForm
+  },
+  {
+    path: '/survey/:id',
+    name: 'Survey',
+    component: Survey
+  },
+  {
+    path: '*',
+    redirect: '/'
   }
 ]
 

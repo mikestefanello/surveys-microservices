@@ -1,6 +1,6 @@
 <template>
-  <div class="new-survey">
-    new survey
+  <div class="survey-form">
+    TODO: Add survey form
   </div>
 </template>
 

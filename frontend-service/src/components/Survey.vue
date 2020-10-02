@@ -1,7 +1,9 @@
 <template>
   <div class="survey">
     <div class="card bg-light mb-3">
-      <div class="card-header">{{ survey.name }}</div>
+      <div class="card-header">
+        <router-link tag="a" class="text-primary" :to="{ name: 'Survey', params: { id: survey.id }}">{{ survey.name }}</router-link>
+      </div>
       <div class="card-body">
         <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div> 
         <div v-if="statusMessage" class="alert alert-success">{{ statusMessage }}</div>
@@ -72,15 +74,15 @@
           body: JSON.stringify(body),
           headers: {"Content-type": "application/json"}
         })
-        .then(res => res.json())
-        .then(() => {
-          this.statusMessage = "Your vote has been recorded!";
-          this.selectedQuestion = false
-        })
-        .catch(error => {
-          this.errorMessage = "Vote request failed. Please try again.";
-          console.log(error);
-        })
+          .then(res => res.json())
+          .then(() => {
+            this.statusMessage = "Your vote has been recorded!";
+            this.selectedQuestion = false
+          })
+          .catch(error => {
+            this.errorMessage = "Vote request failed. Please try again.";
+            console.log(error);
+          });
       },
       getResults() {
         this.errorMessage = "";
