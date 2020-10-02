@@ -76,6 +76,7 @@
         })
           .then(res => res.json())
           .then(() => {
+            // TODO: Check status code
             this.statusMessage = "Your vote has been recorded!";
             this.selectedQuestion = false
           })

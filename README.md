@@ -62,3 +62,4 @@ There is currently no user authentication or limits placed on the amount of vote
 * [go.uuid](https://github.com/satori/go.uuid)
 * [amqp](https://github.com/streadway/amqp)
 * [pgx](https://github.com/jackc/pgx)
+* [bootswatch](https://github.com/thomaspark/bootswatch)
