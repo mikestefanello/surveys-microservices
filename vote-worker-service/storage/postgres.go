@@ -59,8 +59,8 @@ func (p *postgresVoteStorage) UpdateResults(v *vote.Vote) error {
 	switch err {
 	case nil:
 		// Increment the results
-		q = fmt.Sprintf("UPDATE %s SET votes = votes + 1, last_update = $1", p.config.Tables.Results)
-		_, err := p.connection.Exec(context.Background(), q, time.Now().UTC().Unix())
+		q = fmt.Sprintf("UPDATE %s SET votes = votes + 1, last_update = $1 WHERE survey = $2 AND question = $3", p.config.Tables.Results)
+		_, err := p.connection.Exec(context.Background(), q, time.Now().UTC().Unix(), v.Survey, v.Question)
 		if err != nil {
 			return err
 		}
