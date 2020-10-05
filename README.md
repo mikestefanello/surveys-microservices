@@ -1,7 +1,5 @@
 # Survey Microservice Application
 
-**(Work in progress)**
-
 This is an exercise and example of a simple distributed application composed of multiple microservices. It is not meant to be a realistic or production-ready architecture, but rather just an exploration in learning _Go_, _gRPC_ and a number of other technologies, following [hexagonal design](https://en.wikipedia.org/wiki/Hexagonal_architecture_(software)).
 
 The end result is a web-application that allows for the creation of surveys and voting on them.
@@ -9,6 +7,13 @@ The end result is a web-application that allows for the creation of surveys and 
 ## Architecture
 
 ![flowchart](images/flowchart.png)
+
+## Services
+
+* **[Surveys](https://github.com/mikestefanello/surveys-microservices/tree/master/survey-service)**: Provides HTTP and gRPC APIs to create and retrieve surveys. Surveys can only be created via HTTP.
+* **[Votes](https://github.com/mikestefanello/surveys-microservices/tree/master/vote-service)**: Provides an HTTP API to vote for a particular question on a survey as well as fetch results for any given survey. Votes are pushed to the queue when they are received. Results are taken from the database, which are written by the worker.
+* **[Worker](https://github.com/mikestefanello/surveys-microservices/tree/master/vote-worker-service)**: Listens to the queue that votes are pushed in to and when received, writes a record of the vote to the database storage and updates the totals for each question and for each survey. The database schema is initialized with [this file](https://github.com/mikestefanello/surveys-microservices/blob/master/init/postgres/votes.sql).
+* **[Frontend](https://github.com/mikestefanello/surveys-microservices/tree/master/frontend-service)**: Provides a simple, single-page application to view all surveys, create new surveys, vote, and view survey results.
 
 ## Screenshots
 
@@ -20,8 +25,8 @@ The end result is a web-application that allows for the creation of surveys and 
 
 ## Remaining tasks
 
-* Tests
-* README docs
+* **Tests**
+* Finish _README_ docs
 * API documentation
 
 ## Run the app
