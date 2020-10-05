@@ -25,8 +25,6 @@
 </template>
 
 <script>
-
-
 export default {
   name: 'Survey',
   data() {
@@ -74,10 +72,12 @@ export default {
         body: JSON.stringify(survey),
         headers: {"Content-type": "application/json"}
       })
-        .then(res => res.json())
+        .then(res => Promise.all([res.status, res.json()]))
         .then(data => {
-          // TODO: Check status code
-          this.$router.push({ name: 'Survey', params: { id: data.id }});
+          if (data[0] != 201) {
+            throw new Error("Survey creation call resulted in result code: " + data[0]);
+          }
+          this.$router.push({ name: 'Survey', params: { id: data[1].id }});
         })
         .catch(error => {
           this.errorMessage = "Unable to create survey. Please try again.";

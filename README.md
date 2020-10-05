@@ -10,18 +10,23 @@ The end result is a web-application that allows for the creation of surveys and 
 
 ![flowchart](images/flowchart.png)
 
+## Screenshots
+
+![create_survey](images/create_survey.png)
+
+![vote](images/vote.png)
+
+![results](images/results.png)
+
 ## Remaining tasks
 
-* Frontend service
-* Containerize Go apps
 * Tests
 * README docs
 * API documentation
-* Refactoring
 
 ## Run the app
 
-(todo)
+The easiest way to run the app is to use Docker compose. Simply execute `docker-compose up -d` at the root of the repository. After the build is complete, go to `http://localhost:8080` in your browser. The survey service will listen on port 8081, and the vote service on 8082.
 
 ## Logging
 
